@@ -39,34 +39,109 @@ class BinarySearchTree {
   }
 
   has(data) {
+    let res = false
     const rec = (treeItem) => {
-      if (treeItem.value === data) {
-        return true
-      } else if (treeItem.value < data) {
-        if (treeItem.biggerChild) {
-          rec(treeItem.biggerChild)
+        if (treeItem.value === data) {
+            res = true
+            return
+        } else if (treeItem.value < data) {
+            if (treeItem.biggerChild) {
+                rec(treeItem.biggerChild)
+            } else {
+                return
+            }
         } else {
-          return false
+            if (treeItem.smallerChild) {
+                rec(treeItem.smallerChild)
+            } else {
+                return
+            }
         }
-      } else {
-        if (treeItem.smallerChild) {
-          rec(treeItem.smallerChild)
-        } else {
-          return false
-        }
-      }
     }
     rec(this.tree)
+    return res
   }
 
-  find(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  find(data) {
+    
+    let res = null
+    const rec = (treeItem) => {
+        if (treeItem.value === data) {
+            res = treeItem.value
+            return
+        } else if (treeItem.value < data) {
+            if (treeItem.biggerChild) {
+                rec(treeItem.biggerChild)
+            } else {
+                return 
+            }
+        } else {
+            if (treeItem.smallerChild) {
+                rec(treeItem.smallerChild)
+            } else {
+                return 
+            }
+        }
+    }
+    rec(this.tree)
+    return res
   }
 
   remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    const rec = (treeItem) => {
+      if (treeItem.value === data) {
+          if (!treeItem.biggerChild && !treeItem.smallerChild) {
+              const parent = this.find(treeItem.parent)
+              if (parent.value > data) {
+                  parent.smallerChild = null
+              } else {
+                  parent.biggerChild = null
+              }
+              return
+          } else if ((treeItem.biggerChild && !treeItem.smallerChild) || (!treeItem.biggerChild && treeItem.smallerChild)) {
+              const parent = this.find(treeItem.parent)
+              if (parent.value > data) {
+                  const parentCode = parent.smallerChild.parent
+                  if (treeItem.biggerChild) {
+                      log('treeItem.biggerChild', JSON.parse(JSON.stringify(treeItem.biggerChild)))
+                      parent.smallerChild = treeItem.biggerChild
+                      parent.smallerChild.parent = parentCode
+                  } else {
+                      parent.smallerChild = treeItem.smallerChild
+                      parent.smallerChild.parent = parentCode
+                  }
+              } else {
+                  const parentCode = parent.smallerChild.parent
+                  if (treeItem.biggerChild) {
+                      parent.biggerChild = treeItem.biggerChild
+                      parent.biggerChild.parent = parentCode
+                  } else {
+                      parent.biggerChild = treeItem.smallerChild
+                      parent.biggerChild.parent = parentCode
+                  }
+              }
+              return
+
+          } else {
+              // log('res',JSON.parse(JSON.stringify(treeItem)))
+
+          }
+
+      } else if (treeItem.value < data) {
+          if (treeItem.biggerChild) {
+              rec(treeItem.biggerChild)
+          } else {
+              return
+          }
+      } else {
+          if (treeItem.smallerChild) {
+              rec(treeItem.smallerChild)
+          } else {
+              return
+          }
+      }
+  }
+  rec(this.tree)
   }
 
   max() {
